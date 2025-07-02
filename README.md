@@ -6,7 +6,7 @@ Chatbot inteligente, com back-end Java/Spring Boot integrado à OpenAI (ChatGPT)
 
 ## Como funciona
 
-- Front-end web estilo hacker (HTML + JS)
+- Front-end web (HTML + JS)
 - API REST Java/Spring Boot
 - Integração com OpenAI GPT (qualquer modelo compatível)
 - Responde perguntas direto no navegador, igual chatGPT
