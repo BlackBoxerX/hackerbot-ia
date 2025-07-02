@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>HackerBot — IA Terminal</title>
+  <style>
+    body {
+      background: #0a0e10;
+      color: #26ff89;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      margin: 0; padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 540px;
+      margin: 48px auto;
+      background: #101312;
+      border-radius: 18px;
+      box-shadow: 0 0 40px #27ff8a15;
+      padding: 32px 24px 34px 24px;
+      border: 2px solid #18e96a;
+      animation: flickerBg 3s infinite alternate;
+    }
+    @keyframes flickerBg {
+      0% { box-shadow: 0 0 28px #1eff8230; }
+      50% { box-shadow: 0 0 42px #27ff8a44; }
+      100% { box-shadow: 0 0 28px #1eff8230; }
+    }
+    h1 {
+      text-align: center;
+      color: #26ff89;
+      font-size: 2.3em;
+      letter-spacing: 2px;
+      margin: 0 0 8px 0;
+      text-shadow: 0 0 10px #12ff7e50;
+      font-family: inherit;
+      font-weight: bold;
+      filter: brightness(1.2);
+      user-select: none;
+    }
+    .subtitle {
+      color: #6fffdc;
+      text-align: center;
+      font-size: 1.1em;
+      letter-spacing: 1.5px;
+      margin-bottom: 25px;
+      margin-top: -2px;
+      font-weight: 500;
+    }
+    .terminal {
+      background: #080f0c;
+      border: 1.5px solid #26ff8993;
+      border-radius: 10px;
+      padding: 16px 13px 12px 13px;
+      min-height: 210px;
+      max-height: 330px;
+      overflow-y: auto;
+      margin-bottom: 17px;
+      font-size: 1.06em;
+      box-shadow: 0 2px 11px #18e96a15;
+    }
+    .msg {
+      margin-bottom: 12px;
+      padding-left: 2px;
+    }
+    .msg.user {
+      color: #95ffdd;
+      text-align: right;
+    }
+    .msg.ai {
+      color: #26ff89;
+      background: #151e19;
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 8px 8px 8px 3px;
+      border-left: 3px solid #17e96a;
+      margin-bottom: 6px;
+      font-size: 1.06em;
+      box-shadow: 0 1px 7px #12ff7e17;
+      max-width: 94%;
+      word-break: break-word;
+      animation: flickerMsg 2.5s infinite alternate;
+    }
+    @keyframes flickerMsg {
+      0%, 100% { filter: brightness(1.0); }
+      50% { filter: brightness(1.16); }
+    }
+    .msg.system {
+      color: #2aff80;
+      opacity: 0.7;
+      font-size: 0.98em;
+      font-style: italic;
+      margin-left: 4px;
+      margin-bottom: 4px;
+    }
+    .prompt-area {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .prompt-input {
+      flex: 1;
+      padding: 13px 15px;
+      border-radius: 8px;
+      border: 1.4px solid #26ff8957;
+      background: #131b15;
+      color: #34ffab;
+      font-size: 1.09em;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .prompt-input:focus {
+      border-color: #1eff8a;
+    }
+    .send-btn {
+      background: linear-gradient(90deg, #27ff8a 60%, #00994d 100%);
+      color: #11281c;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 22px;
+      font-size: 1.15em;
+      cursor: pointer;
+      box-shadow: 0 1px 7px #1eff8a55;
+      transition: background .18s;
+      font-family: inherit;
+    }
+    .send-btn:hover {
+      background: linear-gradient(90deg, #12ff7e 0%, #008847 100%);
+      color: #171e17;
+    }
+    .footer {
+      color: #26ff89;
+      font-size: 12.5px;
+      margin-top: 26px;
+      text-align: center;
+      letter-spacing: 1.2px;
+      opacity: 0.77;
+      user-select: none;
+    }
+    ::selection { background: #16ff85; color: #0a0e10;}
+  </style>
+  <!-- Fonte monoespaçada hacker -->
+  <link href="https://fonts.googleapis.com/css?family=Fira+Mono:400,700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <h1>HackerBot</h1>
+  <div class="subtitle">IA Terminal — Powered by OpenAI</div>
+  <div id="terminal" class="terminal"></div>
+  <div class="prompt-area">
+    <input type="text" id="prompt" class="prompt-input" placeholder="Digite seu comando ou pergunta..." autocomplete="off" onkeydown="if(event.key==='Enter'){sendMessage();}">
+    <button class="send-btn" onclick="sendMessage()">Enviar</button>
+  </div>
+  <div class="footer">
+    <span>Projeto educacional. Java Spring Boot + OpenAI API + Hacker UI.<br>by BlackBoxerX</span>
+  </div>
+</div>
+<script>
+  const terminalDiv = document.getElementById('terminal');
+  const promptInput = document.getElementById('prompt');
+  let sending = false;
+
+  function appendMessage(text, sender) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + sender;
+    div.textContent = text;
+    terminalDiv.appendChild(div);
+    terminalDiv.scrollTop = terminalDiv.scrollHeight;
+  }
+
+  function appendSystem(msg) {
+    const div = document.createElement('div');
+    div.className = 'msg system';
+    div.textContent = msg;
+    terminalDiv.appendChild(div);
+    terminalDiv.scrollTop = terminalDiv.scrollHeight;
+  }
+
+  async function sendMessage() {
+    if (sending) return;
+    const prompt = promptInput.value.trim();
+    if (!prompt) return;
+    appendMessage("> " + prompt, 'user');
+    promptInput.value = '';
+    sending = true;
+    appendSystem('[AI] Pensando...');
+
+    try {
+      const res = await fetch('http://localhost:8080/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+      document.querySelectorAll('.system').forEach(el => el.remove());
+      typewriterEffect(data.resposta.trim(), 'ai');
+    } catch (e) {
+      document.querySelectorAll('.system').forEach(el => el.remove());
+      appendMessage('[ERRO] Não foi possível conectar ao servidor IA.', 'ai');
+    }
+    sending = false;
+  }
+
+  function typewriterEffect(text, sender) {
+    let i = 0;
+    let out = '';
+    function typing() {
+      if (i < text.length) {
+        out += text.charAt(i);
+        if (i % 7 === 0) terminalDiv.scrollTop = terminalDiv.scrollHeight;
+        if (i === 0) appendMessage("", sender);
+        terminalDiv.lastChild.textContent = out;
+        i++;
+        setTimeout(typing, 9 + Math.random()*8);
+      }
+    }
+    typing();
+  }
+</script>
+</body>
+</html>
+
