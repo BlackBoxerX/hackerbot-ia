@@ -1,6 +1,6 @@
 # HackerBot IA — Java + Spring + OpenAI
 
-Chatbot inteligente estilo terminal hacker, com back-end Java/Spring Boot integrado à OpenAI (ChatGPT).
+Chatbot inteligente, com back-end Java/Spring Boot integrado à OpenAI (ChatGPT).
 
 ![demo](demo.gif) <!-- GIF de exemplo (opcional) -->
 
