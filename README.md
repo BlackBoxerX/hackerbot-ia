@@ -1,22 +1,25 @@
-# HackerBot IA — Java + Spring + OpenAI
+# HackerBot AI — Java + Spring + OpenAI
 
-Chatbot inteligente, com back-end Java/Spring Boot integrado à OpenAI (ChatGPT).
+An intelligent chatbot with a Java/Spring Boot backend, fully integrated with OpenAI (ChatGPT).
 
-![demo](demo.gif) <!-- GIF de exemplo (opcional) -->
+---
 
-## Como funciona
+## 🤖 How It Works
 
-- Front-end web (HTML + JS)
-- API REST Java/Spring Boot
-- Integração com OpenAI GPT (qualquer modelo compatível)
-- Responde perguntas direto no navegador, igual chatGPT
+- **Web Front-end:** HTML + JavaScript
+- **REST API:** Java + Spring Boot
+- **OpenAI Integration:** Supports any compatible GPT model
+- **Ask anything:** Chat directly in your browser, just like ChatGPT
 
-## Como rodar local
+---
 
-1. **Obtenha sua API Key da OpenAI:**  
-   Crie grátis em [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+## 🚀 How to Run Locally
 
-2. **Adicione sua chave no arquivo**  
-   `OpenAiService.java`:
+1. **Get your OpenAI API Key:**  
+   Create a free key at [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+
+2. **Add your API Key:**  
+   Open `OpenAiService.java` and set your key:
    ```java
-   private static final String API_KEY = "COLE_AQUI_SUA_CHAVE_OPENAI";
+   private static final String API_KEY = "YOUR_OPENAI_KEY_HERE";
+
